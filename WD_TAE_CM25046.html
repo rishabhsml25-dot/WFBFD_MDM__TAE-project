@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ROAD READY | Vehicle Maintenance</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                navy: "#0b1220",
+                bluecar: "#2563eb"
+            }
+        }
+    }
+}
+</script>
+
+<style>
+    body {
+        font-family: Inter, Arial, sans-serif;
+    }
+
+    .car-bg {
+        background:
+            linear-gradient(90deg, rgba(5,10,20,.92), rgba(5,10,20,.45)),
+            url("https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1800&q=85");
+        background-size: cover;
+        background-position: center;
+    }
+
+    .login-bg {
+        background:
+            linear-gradient(rgba(5,10,20,.75), rgba(5,10,20,.75)),
+            url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1800&q=85");
+        background-size: cover;
+        background-position: center;
+    }
+
+    .glass {
+        background: rgba(255,255,255,.94);
+        backdrop-filter: blur(10px);
+    }
+</style>
+</head>
+
+<body class="bg-slate-100 text-slate-800">
+
+
+<!-- =====================================================
+     LOGIN PAGE
+===================================================== -->
+
+<div id="loginPage"
+     class="min-h-screen login-bg flex items-center justify-center p-5">
+
+    <div class="w-full max-w-md">
+
+        <!-- LOGO -->
+
+        <div class="text-center text-white mb-8">
+
+            <div class="mx-auto w-20 h-20 rounded-2xl bg-blue-600
+                        flex items-center justify-center shadow-2xl mb-4">
+
+                
+
+            </div>
+
+            <h1 class="text-4xl font-black">
+                ROAD READY
+            </h1>
+
+            <p class="text-slate-300 mt-2">
+                Digital Vehicle Maintenance Log
+            </p>
+
+        </div>
+
+
+        <!-- LOGIN CARD -->
+
+        <div class="glass rounded-3xl shadow-2xl p-7">
+
+            <h2 class="text-2xl font-bold text-slate-900">
+                Welcome back
+            </h2>
+
+            <p class="text-slate-500 text-sm mt-1 mb-6">
+                Login to manage your vehicle maintenance.
+            </p>
+
+
+            <label class="text-sm font-semibold">
+                Email
+            </label>
+
+            <input
+                id="loginEmail"
+                type="email"
+                placeholder="you@example.com"
+                class="w-full mt-2 mb-4 px-4 py-3 border border-slate-300
+                       rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+
+
+            <label class="text-sm font-semibold">
+                Password
+            </label>
+
+            <input
+                id="loginPassword"
+                type="password"
+                placeholder="Enter password"
+                class="w-full mt-2 mb-4 px-4 py-3 border border-slate-300
+                       rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+
+
+            <p id="loginError"
+               class="hidden text-red-500 text-sm mb-3">
+                Please enter valid login details.
+            </p>
+
+
+            <button
+                onclick="login()"
+                class="w-full bg-blue-600 hover:bg-blue-700
+                       text-white py-3.5 rounded-xl font-bold
+                       transition">
+
+                Login
+
+            </button>
+
+
+            <p class="text-center text-xs text-slate-400 mt-5">
+                Demo login: any valid email + password
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<div id="appPage" class="hidden">
+
+
+<!-- NAVBAR -->
+
+<nav class="bg-slate-950 text-white sticky top-0 z-40 shadow-lg">
+
+    <div class="max-w-7xl mx-auto px-5 py-4
+                flex items-center justify-between">
+
+        <div class="flex items-center gap-3">
+
+            <!-- LOGO -->
+
+            <div class="w-11 h-11 rounded-xl bg-blue-600
+                        flex items-center justify-center">
+
+                <svg width="27" height="27"
+                     viewBox="0 0 64 64"
+                     fill="none"
+                     xmlns="http://www.w3.org/2000/svg">
+
+                    <path d="M12 38L17 23C18 20 20 18 24 18H40C44 18 46 20 47 23L52 38"
+                          stroke="white"
+                          stroke-width="5"
+                          stroke-linecap="round"/>
+
+                    <path d="M9 38H55V48C55 50 53 52 51 52H13C11 52 9 50 9 48V38Z"
+                          stroke="white"
+                          stroke-width="5"/>
+
+                    <circle cx="18" cy="44" r="4" fill="white"/>
+                    <circle cx="46" cy="44" r="4" fill="white"/>
+
+                </svg>
+
+            </div>
+
+
+            <div>
+
+                <h1 class="font-black text-xl">
+                    Road Ready
+                </h1>
+
+                <p class="text-xs text-slate-400">
+                    Maintenance Log
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="flex items-center gap-3">
+
+            <span id="loggedUser"
+                  class="hidden sm:block text-sm text-slate-300">
+            </span>
+
+
+            <button
+                onclick="logout()"
+                class="bg-red-500 hover:bg-red-600
+                       px-4 py-2 rounded-lg text-sm font-semibold">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- MAIN -->
+
+<main class="max-w-7xl mx-auto px-4 py-7">
+
+
+<!-- HERO VEHICLE -->
+
+<section class="car-bg rounded-3xl overflow-hidden
+                min-h-[320px] flex items-center
+                shadow-xl mb-7">
+
+    <div class="p-7 md:p-12 text-white max-w-2xl">
+
+        <p class="uppercase tracking-[3px] text-blue-300
+                  font-bold text-sm">
+            Vehicle Dashboard
+        </p>
+
+        <h2 id="vehicleName"
+            class="text-4xl md:text-5xl font-black mt-3">
+            My Car
+        </h2>
+
+        <p id="vehicleNumber"
+           class="text-slate-300 mt-2 text-lg">
+            Vehicle Number: Not Added
+        </p>
+
+
+        <div class="flex flex-wrap gap-3 mt-7">
+
+            <button
+                onclick="openVehicleModal()"
+                class="bg-white text-slate-900
+                       px-5 py-3 rounded-xl font-bold
+                       hover:bg-slate-100">
+
+                Edit Vehicle
+
+            </button>
+
+
+            <button
+                onclick="openServiceModal()"
+                class="bg-blue-600 hover:bg-blue-700
+                       px-5 py-3 rounded-xl font-bold">
+
+                Add Service
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- DASHBOARD CARDS -->
+
+<section class="grid grid-cols-1 sm:grid-cols-2
+                lg:grid-cols-4 gap-5 mb-7">
+
+
+    <!-- CURRENT MILEAGE -->
+
+    <div class="bg-white rounded-2xl shadow-sm
+                border border-slate-200 p-5">
+
+        <p class="text-sm text-slate-500">
+            Current Mileage
+        </p>
+
+        <h3 id="currentMileage"
+            class="text-3xl font-black mt-2">
+            0 km
+        </h3>
+
+        <p class="text-xs text-slate-400 mt-2">
+            Latest odometer reading
+        </p>
+
+    </div>
+
+
+    <!-- NEXT SERVICE -->
+
+    <div class="bg-white rounded-2xl shadow-sm
+                border border-slate-200 p-5">
+
+        <p class="text-sm text-slate-500">
+            Next Service
+        </p>
+
+        <h3 id="nextService"
+            class="text-3xl font-black text-blue-600 mt-2">
+            10,000 km
+        </h3>
+
+        <p id="serviceRemaining"
+           class="text-xs text-slate-400 mt-2">
+            10,000 km remaining
+        </p>
+
+    </div>
+
+
+    <!-- TOTAL SERVICES -->
+
+    <div class="bg-white rounded-2xl shadow-sm
+                border border-slate-200 p-5">
+
+        <p class="text-sm text-slate-500">
+            Total Services
+        </p>
+
+        <h3 id="totalServices"
+            class="text-3xl font-black mt-2">
+            0
+        </h3>
+
+        <p class="text-xs text-slate-400 mt-2">
+            Maintenance records
+        </p>
+
+    </div>
+
+
+    <!-- STATUS -->
+
+    <div class="bg-white rounded-2xl shadow-sm
+                border border-slate-200 p-5">
+
+        <p class="text-sm text-slate-500">
+            Maintenance Status
+        </p>
+
+        <h3 id="maintenanceStatus"
+            class="text-2xl font-black text-green-600 mt-2">
+            Good
+        </h3>
+
+        <p id="maintenanceMessage"
+           class="text-xs text-slate-400 mt-2">
+            Maintenance is up to date.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- MILEAGE -->
+
+<section class="bg-white rounded-2xl shadow-sm
+                border border-slate-200 p-6 mb-7">
+
+    <div class="flex flex-col lg:flex-row
+                lg:items-center justify-between gap-5">
+
+        <div>
+
+            <h2 class="text-xl font-black">
+                Update Mileage
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-1">
+                Enter the latest odometer reading.
+            </p>
+
+        </div>
+
+
+        <div class="flex flex-wrap gap-2">
+
+            <input
+                id="mileageInput"
+                type="number"
+                min="0"
+                placeholder="Example: 55000"
+                class="border border-slate-300 rounded-xl
+                       px-4 py-3 outline-none
+                       focus:ring-2 focus:ring-blue-500">
+
+
+            <button
+                onclick="updateMileage()"
+                class="bg-blue-600 hover:bg-blue-700
+                       text-white px-5 py-3 rounded-xl font-bold">
+
+                Update
+
+            </button>
+
+
+            <button
+                onclick="deleteMileage()"
+                class="bg-red-500 hover:bg-red-600
+                       text-white px-5 py-3 rounded-xl font-bold">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- UPCOMING MAINTENANCE -->
+
+<section class="bg-white rounded-2xl shadow-sm
+                border border-slate-200 p-6 mb-7">
+
+    <div class="mb-5">
+
+        <h2 class="text-xl font-black">
+            Upcoming Maintenance
+        </h2>
+
+        <p class="text-sm text-slate-500">
+            Automatic maintenance reminders based on mileage.
+        </p>
+
+    </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+
+        <div class="border border-slate-200
+                    rounded-2xl p-5">
+
+            <div class="w-12 h-12 rounded-xl bg-blue-50
+                        flex items-center justify-center
+                        text-2xl mb-4">
+                O
+            </div>
+
+            <h3 class="font-bold text-lg">
+                Engine Oil
+            </h3>
+
+            <p class="text-sm text-slate-500">
+                Every 10,000 km
+            </p>
+
+            <p id="oilAlert"
+               class="font-bold text-blue-600 mt-3">
+                -
+            </p>
+
+        </div>
+
+
+        <div class="border border-slate-200
+                    rounded-2xl p-5">
+
+            <div class="w-12 h-12 rounded-xl bg-blue-50
+                        flex items-center justify-center
+                        text-2xl mb-4">
+                T
+            </div>
+
+            <h3 class="font-bold text-lg">
+                Tyre Check
+            </h3>
+
+            <p class="text-sm text-slate-500">
+                Every 10,000 km
+            </p>
+
+            <p id="tyreAlert"
+               class="font-bold text-blue-600 mt-3">
+                -
+            </p>
+
+        </div>
+
+
+        <div class="border border-slate-200
+                    rounded-2xl p-5">
+
+            <div class="w-12 h-12 rounded-xl bg-blue-50
+                        flex items-center justify-center
+                        text-2xl mb-4">
+                B
+            </div>
+
+            <h3 class="font-bold text-lg">
+                Battery Check
+            </h3>
+
+            <p class="text-sm text-slate-500">
+                Every 20,000 km
+            </p>
+
+            <p id="batteryAlert"
+               class="font-bold text-blue-600 mt-3">
+                -
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- SERVICE HISTORY -->
+
+<section class="bg-white rounded-2xl shadow-sm
+                border border-slate-200 p-6">
+
+    <div class="flex flex-col md:flex-row
+                justify-between gap-4 mb-5">
+
+        <div>
+
+            <h2 class="text-xl font-black">
+                Service History
+            </h2>
+
+            <p class="text-sm text-slate-500">
+                Track every repair and maintenance record.
+            </p>
+
+        </div>
+
+
+        <button
+            onclick="openServiceModal()"
+            class="bg-green-600 hover:bg-green-700
+                   text-white px-5 py-3 rounded-xl font-bold">
+
+            + Add Service
+
+        </button>
+
+    </div>
+
+
+    <div class="overflow-x-auto">
+
+        <table class="w-full min-w-[700px]">
+
+            <thead>
+
+                <tr class="border-b text-left
+                           text-sm text-slate-500">
+
+                    <th class="p-3">
+                        Date
+                    </th>
+
+                    <th class="p-3">
+                        Mileage
+                    </th>
+
+                    <th class="p-3">
+                        Service
+                    </th>
+
+                    <th class="p-3">
+                        Cost
+                    </th>
+
+                    <th class="p-3">
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="serviceTable"></tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- FOOTER -->
+
+<footer class="bg-slate-950 text-slate-400 mt-10">
+
+    <div class="max-w-7xl mx-auto px-5 py-7
+                flex flex-col md:flex-row
+                justify-between gap-3">
+
+        <p>
+            © 2026 AutoCare. Digital Vehicle Maintenance Log.
+        </p>
+
+        <p>
+            Track • Maintain • Drive
+        </p>
+
+    </div>
+
+</footer>
+
+</div>
+
+
+
+<!-- =====================================================
+     VEHICLE MODAL
+===================================================== -->
+
+<div id="vehicleModal"
+     class="hidden fixed inset-0 bg-black/60
+            flex items-center justify-center
+            p-4 z-50">
+
+    <div class="bg-white rounded-3xl
+                w-full max-w-md p-7 shadow-2xl">
+
+        <div class="flex justify-between items-center mb-6">
+
+            <h2 class="text-2xl font-black">
+                Vehicle Details
+            </h2>
+
+            <button
+                onclick="closeVehicleModal()"
+                class="text-slate-400 text-xl">
+                X
+            </button>
+
+        </div>
+
+
+        <label class="text-sm font-bold">
+            Vehicle Name
+        </label>
+
+        <input
+            id="vehicleNameInput"
+            type="text"
+            placeholder="Maruti Swift"
+            class="w-full border rounded-xl
+                   px-4 py-3 mt-2 mb-4">
+
+
+        <label class="text-sm font-bold">
+            Vehicle Number
+        </label>
+
+        <input
+            id="vehicleNumberInput"
+            type="text"
+            placeholder="MH12AB1234"
+            class="w-full border rounded-xl
+                   px-4 py-3 mt-2 mb-5 uppercase">
+
+
+        <button
+            onclick="saveVehicle()"
+            class="w-full bg-blue-600
+                   hover:bg-blue-700 text-white
+                   py-3 rounded-xl font-bold">
+
+            Save Vehicle
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     SERVICE MODAL
+===================================================== -->
+
+<div id="serviceModal"
+     class="hidden fixed inset-0 bg-black/60
+            flex items-center justify-center
+            p-4 z-50">
+
+    <div class="bg-white rounded-3xl
+                w-full max-w-md p-7 shadow-2xl">
+
+        <div class="flex justify-between items-center mb-6">
+
+            <h2 class="text-2xl font-black">
+                Add Service
+            </h2>
+
+            <button
+                onclick="closeServiceModal()"
+                class="text-slate-400 text-xl">
+                X
+            </button>
+
+        </div>
+
+
+        <label class="text-sm font-bold">
+            Service Date
+        </label>
+
+        <input
+            id="serviceDate"
+            type="date"
+            class="w-full border rounded-xl
+                   px-4 py-3 mt-2 mb-4">
+
+
+        <label class="text-sm font-bold">
+            Mileage
+        </label>
+
+        <input
+            id="serviceMileage"
+            type="number"
+            placeholder="50000"
+            class="w-full border rounded-xl
+                   px-4 py-3 mt-2 mb-4">
+
+
+        <label class="text-sm font-bold">
+            Service Type
+        </label>
+
+        <select
+            id="serviceType"
+            class="w-full border rounded-xl
+                   px-4 py-3 mt-2 mb-4">
+
+            <option>Engine Oil Change</option>
+            <option>Full Service</option>
+            <option>Brake Service</option>
+            <option>Tyre Replacement</option>
+            <option>Battery Replacement</option>
+            <option>AC Service</option>
+            <option>General Repair</option>
+
+        </select>
+
+
+        <label class="text-sm font-bold">
+            Cost
+        </label>
+
+        <input
+            id="serviceCost"
+            type="number"
+            placeholder="₹ 2500"
+            class="w-full border rounded-xl
+                   px-4 py-3 mt-2 mb-5">
+
+
+        <button
+            onclick="addService()"
+            class="w-full bg-green-600
+                   hover:bg-green-700 text-white
+                   py-3 rounded-xl font-bold">
+
+            Save Service
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+let vehicle =
+    JSON.parse(localStorage.getItem("vehicle")) || {
+
+        name: "My Car",
+
+        number: "Not Added",
+
+        mileage: 0
+
+    };
+
+
+let services =
+    JSON.parse(localStorage.getItem("services")) || [];
+
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function login() {
+
+    const email =
+        document.getElementById("loginEmail").value.trim();
+
+    const password =
+        document.getElementById("loginPassword").value.trim();
+
+
+    if (!email || !email.includes("@") || !password) {
+
+        document
+            .getElementById("loginError")
+            .classList.remove("hidden");
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "loggedIn",
+        "true"
+    );
+
+
+    localStorage.setItem(
+        "loggedUser",
+        email
+    );
+
+
+    showDashboard();
+
+}
+
+
+
+/* =====================================================
+   SHOW DASHBOARD
+===================================================== */
+
+function showDashboard() {
+
+    document
+        .getElementById("loginPage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("appPage")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("loggedUser")
+        .innerText =
+        localStorage.getItem("loggedUser") || "";
+
+
+    loadDashboard();
+
+}
+
+
+
+/* =====================================================
+   LOGOUT
+   DELETE ALL DATA
+===================================================== */
+
+function logout() {
+
+    const confirmLogout =
+        confirm(
+            "Logout karne par vehicle, mileage aur service history ka saara saved data delete ho jayega.\n\nContinue?"
+        );
+
+
+    if (!confirmLogout) {
+        return;
+    }
+
+
+    /*
+       DELETE EVERYTHING
+    */
+
+    localStorage.clear();
+
+
+    /*
+       Reset memory variables
+    */
+
+    vehicle = {
+
+        name: "My Car",
+
+        number: "Not Added",
+
+        mileage: 0
+
+    };
+
+
+    services = [];
+
+
+    /*
+       Close dashboard
+    */
+
+    document
+        .getElementById("appPage")
+        .classList.add("hidden");
+
+
+    /*
+       Show login
+    */
+
+    document
+        .getElementById("loginPage")
+        .classList.remove("hidden");
+
+
+    /*
+       Clear login fields
+    */
+
+    document.getElementById("loginEmail").value = "";
+
+    document.getElementById("loginPassword").value = "";
+
+
+    alert(
+        "Logout successful. All saved vehicle data has been deleted."
+    );
+
+}
+
+
+
+/* =====================================================
+   VEHICLE
+===================================================== */
+
+function openVehicleModal() {
+
+    document
+        .getElementById("vehicleModal")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("vehicleNameInput")
+        .value =
+        vehicle.name;
+
+
+    document
+        .getElementById("vehicleNumberInput")
+        .value =
+        vehicle.number;
+
+}
+
+
+
+function closeVehicleModal() {
+
+    document
+        .getElementById("vehicleModal")
+        .classList.add("hidden");
+
+}
+
+
+
+function saveVehicle() {
+
+    const name =
+        document
+        .getElementById("vehicleNameInput")
+        .value
+        .trim();
+
+
+    const number =
+        document
+        .getElementById("vehicleNumberInput")
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    if (!name || !number) {
+
+        alert(
+            "Please enter vehicle name and number."
+        );
+
+        return;
+
+    }
+
+
+    vehicle.name = name;
+
+    vehicle.number = number;
+
+
+    localStorage.setItem(
+        "vehicle",
+        JSON.stringify(vehicle)
+    );
+
+
+    closeVehicleModal();
+
+    loadDashboard();
+
+}
+
+
+
+/* =====================================================
+   MILEAGE
+===================================================== */
+
+function updateMileage() {
+
+    const input =
+        document.getElementById("mileageInput");
+
+
+    const mileage =
+        Number(input.value);
+
+
+    if (
+        input.value === "" ||
+        mileage < 0
+    ) {
+
+        alert(
+            "Please enter a valid mileage."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Prevent lower mileage.
+       If wrong value was entered,
+       use Delete button first.
+    */
+
+    if (
+        vehicle.mileage > 0 &&
+        mileage < vehicle.mileage
+    ) {
+
+        alert(
+            "New mileage cannot be lower than previous mileage.\n\nIf the previous mileage is wrong, delete it first."
+        );
+
+        return;
+
+    }
+
+
+    vehicle.mileage = mileage;
+
+
+    localStorage.setItem(
+        "vehicle",
+        JSON.stringify(vehicle)
+    );
+
+
+    input.value = "";
+
+
+    loadDashboard();
+
+}
+
+
+
+function deleteMileage() {
+
+    if (vehicle.mileage === 0) {
+
+        alert(
+            "No mileage is currently saved."
+        );
+
+        return;
+
+    }
+
+
+    const confirmDelete =
+        confirm(
+            "Delete current mileage?\n\nCurrent mileage: "
+            + vehicle.mileage.toLocaleString()
+            + " km"
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    vehicle.mileage = 0;
+
+
+    localStorage.setItem(
+        "vehicle",
+        JSON.stringify(vehicle)
+    );
+
+
+    document
+        .getElementById("mileageInput")
+        .value = "";
+
+
+    loadDashboard();
+
+
+    alert(
+        "Mileage deleted. Enter the correct mileage now."
+    );
+
+}
+
+
+
+/* =====================================================
+   SERVICE CALCULATION
+===================================================== */
+
+function calculateNextService() {
+
+    const interval = 10000;
+
+    const current = vehicle.mileage;
+
+
+    let next =
+        Math.floor(current / interval + 1)
+        * interval;
+
+
+    let remaining =
+        next - current;
+
+
+    document
+        .getElementById("nextService")
+        .innerText =
+        next.toLocaleString()
+        + " km";
+
+
+    document
+        .getElementById("serviceRemaining")
+        .innerText =
+        remaining.toLocaleString()
+        + " km remaining";
+
+
+    document
+        .getElementById("oilAlert")
+        .innerText =
+        remaining.toLocaleString()
+        + " km remaining";
+
+
+    document
+        .getElementById("tyreAlert")
+        .innerText =
+        remaining.toLocaleString()
+        + " km remaining";
+
+
+    const batteryInterval = 20000;
+
+
+    let nextBattery =
+        Math.floor(current / batteryInterval + 1)
+        * batteryInterval;
+
+
+    let batteryRemaining =
+        nextBattery - current;
+
+
+    document
+        .getElementById("batteryAlert")
+        .innerText =
+        batteryRemaining.toLocaleString()
+        + " km remaining";
+
+
+    const status =
+        document.getElementById(
+            "maintenanceStatus"
+        );
+
+
+    const message =
+        document.getElementById(
+            "maintenanceMessage"
+        );
+
+
+    if (remaining <= 1000) {
+
+        status.innerText =
+            "Due Soon";
+
+        status.className =
+            "text-2xl font-black text-orange-500 mt-2";
+
+
+        message.innerText =
+            "Service is due within "
+            + remaining.toLocaleString()
+            + " km.";
+
+    }
+
+    else {
+
+        status.innerText =
+            "Good";
+
+        status.className =
+            "text-2xl font-black text-green-600 mt-2";
+
+
+        message.innerText =
+            "Next service in "
+            + remaining.toLocaleString()
+            + " km.";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SERVICE MODAL
+===================================================== */
+
+function openServiceModal() {
+
+    document
+        .getElementById("serviceModal")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("serviceDate")
+        .value =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    document
+        .getElementById("serviceMileage")
+        .value =
+        vehicle.mileage;
+
+}
+
+
+
+function closeServiceModal() {
+
+    document
+        .getElementById("serviceModal")
+        .classList.add("hidden");
+
+}
+
+
+
+/* =====================================================
+   ADD SERVICE
+===================================================== */
+
+function addService() {
+
+    const date =
+        document.getElementById("serviceDate").value;
+
+
+    const mileage =
+        Number(
+            document.getElementById("serviceMileage").value
+        );
+
+
+    const type =
+        document.getElementById("serviceType").value;
+
+
+    const cost =
+        Number(
+            document.getElementById("serviceCost").value
+        );
+
+
+    if (
+        !date ||
+        mileage <= 0 ||
+        !type ||
+        cost < 0
+    ) {
+
+        alert(
+            "Please fill all service details."
+        );
+
+        return;
+
+    }
+
+
+    services.unshift({
+
+        id: Date.now(),
+
+        date: date,
+
+        mileage: mileage,
+
+        type: type,
+
+        cost: cost
+
+    });
+
+
+    localStorage.setItem(
+        "services",
+        JSON.stringify(services)
+    );
+
+
+    /*
+       Update current mileage
+       if service mileage is newer.
+    */
+
+    if (mileage > vehicle.mileage) {
+
+        vehicle.mileage = mileage;
+
+
+        localStorage.setItem(
+            "vehicle",
+            JSON.stringify(vehicle)
+        );
+
+    }
+
+
+    closeServiceModal();
+
+    loadDashboard();
+
+
+    alert(
+        "Service record added successfully."
+    );
+
+}
+
+
+
+/* =====================================================
+   DISPLAY SERVICE HISTORY
+===================================================== */
+
+function displayServices() {
+
+    const table =
+        document.getElementById(
+            "serviceTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    if (services.length === 0) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td colspan="5"
+                    class="text-center py-10
+                           text-slate-400">
+
+                    No service records yet.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    services.forEach(service => {
+
+        table.innerHTML += `
+
+            <tr class="border-b hover:bg-slate-50">
+
+                <td class="p-3">
+                    ${service.date}
+                </td>
+
+
+                <td class="p-3 font-semibold">
+                    ${Number(service.mileage)
+                        .toLocaleString()} km
+                </td>
+
+
+                <td class="p-3">
+                    ${service.type}
+                </td>
+
+
+                <td class="p-3 font-semibold">
+                    ₹${Number(service.cost)
+                        .toLocaleString()}
+                </td>
+
+
+                <td class="p-3">
+
+                    <button
+                        onclick="deleteService(${service.id})"
+                        class="text-red-500
+                               hover:text-red-700
+                               font-semibold">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+
+/* =====================================================
+   DELETE SERVICE
+===================================================== */
+
+function deleteService(id) {
+
+    const confirmDelete =
+        confirm(
+            "Delete this service record?"
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    services =
+        services.filter(
+            service =>
+            service.id !== id
+        );
+
+
+    localStorage.setItem(
+        "services",
+        JSON.stringify(services)
+    );
+
+
+    loadDashboard();
+
+}
+
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function loadDashboard() {
+
+    document
+        .getElementById("vehicleName")
+        .innerText =
+        vehicle.name;
+
+
+    document
+        .getElementById("vehicleNumber")
+        .innerText =
+        "Vehicle Number: "
+        + vehicle.number;
+
+
+    document
+        .getElementById("currentMileage")
+        .innerText =
+        vehicle.mileage.toLocaleString()
+        + " km";
+
+
+    document
+        .getElementById("totalServices")
+        .innerText =
+        services.length;
+
+
+    calculateNextService();
+
+    displayServices();
+
+}
+
+
+
+/* =====================================================
+   MODAL OUTSIDE CLICK
+===================================================== */
+
+document
+    .getElementById("vehicleModal")
+    .addEventListener(
+        "click",
+        function(e) {
+
+            if (e.target === this) {
+                closeVehicleModal();
+            }
+
+        }
+    );
+
+
+document
+    .getElementById("serviceModal")
+    .addEventListener(
+        "click",
+        function(e) {
+
+            if (e.target === this) {
+                closeServiceModal();
+            }
+
+        }
+    );
+
+
+
+/* =====================================================
+   AUTO LOGIN CHECK
+===================================================== */
+
+if (
+    localStorage.getItem("loggedIn")
+    === "true"
+) {
+
+    showDashboard();
+
+}
+
+</script>
+
+</body>
+</html>
