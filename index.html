@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRIVE CARE — Digital Vehicle Maintenance Log</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: { charcoal: '#171717' },
+        fontFamily: { display: ['Rajdhani','sans-serif'], body: ['Inter','sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  body{font-family:'Inter',sans-serif;background:#F6F5F2;}
+  .font-display{font-family:'Rajdhani',sans-serif;}
+  .icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .card-head{background:#171717;color:#fff;border-radius:16px 16px 0 0;padding:14px 20px;display:flex;align-items:center;gap:10px;}
+  .card-body{background:#fff;border:1px solid #E7E5E0;border-top:none;border-radius:0 0 16px 16px;padding:22px;}
+  .bar{transition:width .6s ease;}
+  .gauge{transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray .6s ease;}
+  .nav-link.active{background:#E50914;color:#fff;}
+  .nav-link.active .icon{stroke:#fff;}
+  .lift{transition:transform .15s ease, box-shadow .15s ease;}
+  .lift:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(0,0,0,.12);}
+  .table-scroll::-webkit-scrollbar{height:6px;}
+  .table-scroll::-webkit-scrollbar-thumb{background:#f3c6c6;border-radius:4px;}
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{outline:2px solid #E50914;outline-offset:2px;}
+  ::selection{background:#E50914;color:#fff;}
+</style>
+</head>
+<body class="text-charcoal antialiased">
+
+<div class="flex min-h-screen">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="hidden lg:flex lg:flex-col w-64 shrink-0 bg-white border-r border-gray-200 sticky top-0 h-screen">
+    <div class="px-6 py-6 flex items-center gap-3 border-b border-gray-100">
+      <div class="h-11 w-11 rounded-2xl bg-[#E50914] flex items-center justify-center shrink-0">
+        <svg class="icon" style="stroke:#fff;width:22px;height:22px" viewBox="0 0 24 24"><path d="M5 17h14M5 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm14 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-14-4 1.5-5A2 2 0 0 1 8.4 6.5h7.2a2 2 0 0 1 1.9 1.5L19 13"/></svg>
+      </div>
+      <div>
+        <p class="font-display text-lg font-bold leading-tight">DRIVE <span class="text-[#E50914]">CARE</span></p>
+        <p class="text-[11px] text-gray-400 leading-tight">Vehicle Maintenance Log</p>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-4 py-6 space-y-1 font-display text-[15px] font-semibold" id="sidebar-nav">
+      <a href="#dashboard" data-section="dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 transition">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg> Dashboard
+      </a>
+      <a href="#add-service" data-section="add-service" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 transition">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg> Add Service
+      </a>
+      <a href="#service-history" data-section="service-history" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 transition">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg> Service History
+      </a>
+      <a href="#mileage" data-section="mileage" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 transition">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg> Analytics
+      </a>
+      <a href="#reminders" data-section="reminders" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 transition">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Reminders
+      </a>
+      <a href="#about" data-section="about" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 transition">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> About
+      </a>
+    </nav>
+
+    <div class="p-4">
+      <div class="bg-[#FCEBEB] rounded-2xl p-4 text-center">
+        <div class="h-9 w-9 rounded-full bg-white mx-auto flex items-center justify-center mb-2">
+          <svg class="icon" style="stroke:#E50914;width:18px;height:18px" viewBox="0 0 24 24"><path d="M5 17h14M5 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm14 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-14-4 1.5-5A2 2 0 0 1 8.4 6.5h7.2a2 2 0 0 1 1.9 1.5L19 13"/></svg>
+        </div>
+        <p class="text-xs text-gray-600 italic leading-snug">"A well maintained car is a safe car."</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MOBILE TOP BAR ============ -->
+  <div class="lg:hidden fixed top-0 inset-x-0 z-20 bg-white border-b border-gray-200 flex items-center justify-between px-4 py-3">
+    <p class="font-display text-lg font-bold">DRIVE <span class="text-[#E50914]">CARE</span></p>
+    <button id="mobile-menu-btn" class="p-2" aria-label="Open menu">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <nav id="mobile-nav" class="hidden lg:hidden fixed top-[52px] inset-x-0 z-20 bg-white border-b border-gray-200 px-4 pb-3 space-y-1 font-display font-semibold">
+    <a href="#dashboard" data-section="dashboard" class="nav-link mobile-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500">Dashboard</a>
+    <a href="#add-service" data-section="add-service" class="nav-link mobile-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500">Add Service</a>
+    <a href="#service-history" data-section="service-history" class="nav-link mobile-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500">Service History</a>
+    <a href="#mileage" data-section="mileage" class="nav-link mobile-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500">Analytics</a>
+    <a href="#reminders" data-section="reminders" class="nav-link mobile-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500">Reminders</a>
+    <a href="#about" data-section="about" class="nav-link mobile-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500">About</a>
+  </nav>
+
+  <!-- ============ MAIN ============ -->
+  <main class="flex-1 px-4 sm:px-6 lg:px-10 py-6 lg:py-8 mt-14 lg:mt-0 max-w-[1400px] mx-auto w-full">
+
+    <!-- ===== HERO / TOP BAR ===== -->
+    <div class="relative rounded-2xl overflow-hidden mb-6 bg-white border border-gray-200">
+      <div class="absolute inset-0" style="background-image:radial-gradient(#00000010 1px,transparent 1px);background-size:16px 16px;"></div>
+      <svg viewBox="0 0 512 220" class="absolute -right-6 -top-2 w-[62%] max-w-[560px] opacity-[0.14]" fill="none" stroke="#171717" stroke-width="3">
+        <path d="M20 150 Q35 95 95 88 L145 58 Q195 32 265 38 L340 48 Q400 56 428 88 L468 92 Q492 95 492 120 L492 150 L468 150" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M55 150 L435 150" stroke-linecap="round"/>
+        <circle cx="115" cy="155" r="26"/><circle cx="115" cy="155" r="9"/>
+        <circle cx="395" cy="155" r="26"/><circle cx="395" cy="155" r="9"/>
+        <path d="M145 88 L155 55 Q198 40 250 43 L250 88 Z" stroke-linejoin="round"/>
+        <path d="M265 88 L265 46 Q322 51 362 80 L362 88 Z" stroke-linejoin="round"/>
+      </svg>
+      <div class="relative px-6 py-6 sm:px-8 sm:py-7 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 class="font-display text-2xl sm:text-3xl font-bold">Hello, Owner! 👋</h1>
+          <p class="text-gray-500 mt-1 text-sm">Keep your vehicle in perfect condition.</p>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-sm">
+          <svg class="icon" style="stroke:#E50914" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+          <span id="today-date" class="text-sm font-semibold">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== VEHICLE INFO (compact strip) ===== -->
+    <section class="bg-white rounded-2xl border border-gray-200 p-5 mb-6">
+      <form id="vehicle-form" class="grid sm:grid-cols-4 gap-3 items-end">
+        <div>
+          <label for="vehicle-name" class="block text-xs font-semibold text-gray-500 mb-1">Vehicle name</label>
+          <input id="vehicle-name" type="text" placeholder="Honda City" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#E50914] outline-none">
+        </div>
+        <div>
+          <label for="current-mileage" class="block text-xs font-semibold text-gray-500 mb-1">Current mileage (km)</label>
+          <input id="current-mileage" type="number" min="0" placeholder="24200" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#E50914] outline-none">
+        </div>
+        <div>
+          <label for="average-mileage" class="block text-xs font-semibold text-gray-500 mb-1">Average mileage (km/l)</label>
+          <input id="average-mileage" type="number" min="0" step="0.1" placeholder="18.5" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#E50914] outline-none">
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="submit" class="w-full bg-[#E50914] hover:bg-[#c40812] text-white font-display font-bold px-4 py-2.5 rounded-lg transition">Save vehicle</button>
+        </div>
+      </form>
+      <span id="vehicle-saved-msg" class="mt-2 text-xs text-[#E50914] font-medium hidden">Vehicle information saved</span>
+    </section>
+
+    <!-- ===== STAT CARDS ===== -->
+    <div id="dashboard" class="scroll-mt-20 grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 flex items-start gap-3 lift">
+        <div class="h-11 w-11 rounded-xl bg-[#FCEBEB] flex items-center justify-center shrink-0"><svg class="icon" style="stroke:#E50914" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-3"/><path d="M9 5l1.5-2h3L15 5"/></svg></div>
+        <div>
+          <p class="text-sm font-semibold">Current mileage</p>
+          <p id="stat-current-mileage" class="font-display text-2xl font-bold leading-tight">0 km</p>
+          <p class="text-xs text-gray-400">Total distance covered</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 flex items-start gap-3 lift">
+        <div class="h-11 w-11 rounded-xl bg-[#FCEBEB] flex items-center justify-center shrink-0"><svg class="icon" style="stroke:#E50914" viewBox="0 0 24 24"><path d="M12 2.7l5.7 5.7a8 8 0 1 1-11.4 0Z"/></svg></div>
+        <div>
+          <p class="text-sm font-semibold">Average mileage</p>
+          <p id="stat-average-mileage" class="font-display text-2xl font-bold leading-tight">0 km/l</p>
+          <p class="text-xs text-gray-400">Fuel efficiency</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 flex items-start gap-3 lift">
+        <div class="h-11 w-11 rounded-xl bg-[#FCEBEB] flex items-center justify-center shrink-0"><svg class="icon" style="stroke:#E50914" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.6-3.6a6 6 0 0 1-7.7 7.7l-6.7 6.7a2.1 2.1 0 0 1-3-3l6.7-6.7a6 6 0 0 1 7.7-7.7z"/></svg></div>
+        <div>
+          <p class="text-sm font-semibold">Services done</p>
+          <p id="stat-services-done" class="font-display text-2xl font-bold leading-tight">0</p>
+          <p class="text-xs text-gray-400">Total services</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 flex items-start gap-3 lift">
+        <div class="h-11 w-11 rounded-xl bg-[#FCEBEB] flex items-center justify-center shrink-0"><span class="text-[#E50914] font-display font-bold text-lg">₹</span></div>
+        <div>
+          <p class="text-sm font-semibold">Total service cost</p>
+          <p id="stat-total-cost" class="font-display text-2xl font-bold leading-tight">₹0</p>
+          <p class="text-xs text-gray-400">Total amount spent</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 flex items-start gap-3 lift">
+        <div class="h-11 w-11 rounded-xl bg-[#FCEBEB] flex items-center justify-center shrink-0"><svg class="icon" style="stroke:#E50914" viewBox="0 0 24 24"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+        <div>
+          <p class="text-sm font-semibold">Avg. service cost</p>
+          <p id="stat-average-cost" class="font-display text-2xl font-bold leading-tight">₹0</p>
+          <p class="text-xs text-gray-400">Average per service</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MAINTENANCE ALERT + ADD SERVICE ===== -->
+    <div class="grid lg:grid-cols-2 gap-6 mb-6">
+      <div>
+        <div class="card-head">
+          <svg class="icon" style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="font-display font-bold text-sm tracking-wide">MAINTENANCE ALERT</span>
+        </div>
+        <div class="card-body">
+          <div class="flex items-start justify-between gap-3 flex-wrap">
+            <div>
+              <p class="text-xs font-semibold text-gray-400">Next service due</p>
+              <p id="alert-next-service" class="font-display text-4xl font-bold">— km</p>
+            </div>
+            <span id="alert-badge" class="inline-flex items-center gap-1 bg-[#E50914] text-white text-xs font-bold px-3 py-1.5 rounded-full">
+              <svg class="icon" style="width:13px;height:13px;stroke:#fff" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+              <span id="alert-badge-text">—</span>
+            </span>
+          </div>
+
+          <div class="flex gap-10 mt-5">
+            <div>
+              <p class="text-xs font-semibold text-gray-400">Remaining</p>
+              <p id="alert-remaining" class="font-display text-2xl font-bold text-[#E50914]">— km</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-400">Service progress</p>
+              <p id="alert-percent" class="font-display text-2xl font-bold">0%</p>
+            </div>
+          </div>
+
+          <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-2">
+            <div id="alert-bar" class="bar h-full bg-[#E50914] rounded-full" style="width:0%"></div>
+          </div>
+
+          <div id="alert-message" class="mt-4 rounded-lg px-4 py-3 text-sm font-medium bg-[#FCEBEB] text-[#c40812]"></div>
+        </div>
+      </div>
+
+      <div id="add-service" class="scroll-mt-20">
+        <div class="card-head">
+          <svg class="icon" style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.6-3.6a6 6 0 0 1-7.7 7.7l-6.7 6.7a2.1 2.1 0 0 1-3-3l6.7-6.7a6 6 0 0 1 7.7-7.7z"/></svg>
+          <span class="font-display font-bold text-sm tracking-wide">ADD NEW SERVICE</span>
+        </div>
+        <div class="card-body">
+          <form id="service-form" class="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label for="service-type" class="block text-xs font-semibold text-gray-500 mb-1">Service type</label>
+              <select id="service-type" required class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#E50914] outline-none bg-white">
+                <option value="" disabled selected>Select service</option>
+                <option>Oil Change</option>
+                <option>Brake Service</option>
+                <option>General Service</option>
+                <option>Tyre Change</option>
+                <option>Battery Replacement</option>
+                <option>Air Filter</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="service-mileage" class="block text-xs font-semibold text-gray-500 mb-1">Service mileage (km)</label>
+              <input id="service-mileage" type="number" min="0" placeholder="25000" required class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#E50914] outline-none">
+            </div>
+            <div>
+              <label for="service-date" class="block text-xs font-semibold text-gray-500 mb-1">Service date</label>
+              <input id="service-date" type="date" required class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#E50914] outline-none">
+            </div>
+            <div>
+              <label for="service-cost" class="block text-xs font-semibold text-gray-500 mb-1">Service cost (₹)</label>
+              <input id="service-cost" type="number" min="0" placeholder="1500" required class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#E50914] outline-none">
+            </div>
+            <div class="sm:col-span-2 flex items-end justify-end sm:col-start-2">
+              <button type="submit" class="bg-[#E50914] hover:bg-[#c40812] text-white font-display font-bold tracking-wide px-6 py-3 rounded-lg transition w-full sm:w-auto">+ ADD SERVICE</button>
+            </div>
+          </form>
+          <p id="service-error" class="text-sm text-[#E50914] mt-2 hidden">Fill in all fields correctly before adding a service.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SERVICE HISTORY + MILEAGE/TIPS ===== -->
+    <div class="grid lg:grid-cols-5 gap-6 mb-6">
+      <div id="service-history" class="scroll-mt-20 lg:col-span-3">
+        <div class="card-head justify-between">
+          <div class="flex items-center gap-2">
+            <svg class="icon" style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            <span class="font-display font-bold text-sm tracking-wide">SERVICE HISTORY</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-scroll overflow-x-auto">
+            <table class="w-full text-sm min-w-[520px]">
+              <thead>
+                <tr class="text-left text-xs uppercase tracking-wide text-gray-400 border-b border-gray-200">
+                  <th class="py-2.5 pr-3 font-semibold">#</th>
+                  <th class="py-2.5 pr-3 font-semibold">Service type</th>
+                  <th class="py-2.5 pr-3 font-semibold">Mileage</th>
+                  <th class="py-2.5 pr-3 font-semibold">Date</th>
+                  <th class="py-2.5 pr-3 font-semibold">Cost</th>
+                  <th class="py-2.5 pr-3 font-semibold">Action</th>
+                </tr>
+              </thead>
+              <tbody id="service-table-body" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+          <p id="no-services-msg" class="text-sm text-gray-400 text-center py-8 hidden">No service records yet. Add your first service above.</p>
+
+          <button id="clear-history-btn" class="mt-4 w-full border border-[#f3b9b9] text-[#E50914] hover:bg-[#FCEBEB] font-display font-bold text-sm px-4 py-2.5 rounded-lg transition flex items-center justify-center gap-2">
+            <svg class="icon" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"/><path d="M10 11v6M14 11v6"/></svg>
+            CLEAR ALL HISTORY
+          </button>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2 flex flex-col gap-6">
+        <div id="mileage" class="scroll-mt-20">
+          <div class="card-head">
+            <svg class="icon" style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            <span class="font-display font-bold text-sm tracking-wide">MILEAGE PROGRESS</span>
+          </div>
+          <div class="card-body">
+            <p class="text-xs font-semibold text-gray-400 mb-3">Service cycle: <span id="mileage-cycle-label">— km</span></p>
+
+            <div class="flex items-center gap-5">
+              <div class="flex-1">
+                <p id="mileage-current" class="font-display text-2xl font-bold text-[#E50914] mb-2">0 km</p>
+                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div id="mileage-bar" class="bar h-full bg-[#E50914] rounded-full" style="width:0%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-400 mt-1.5">
+                  <span id="mileage-start-label">0 km</span>
+                  <span id="mileage-end-label">5,000 km</span>
+                </div>
+              </div>
+
+              <div class="relative w-20 h-20 shrink-0">
+                <svg viewBox="0 0 80 80" class="w-20 h-20">
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#F1EFEC" stroke-width="8"/>
+                  <circle id="gauge-circle" class="gauge" cx="40" cy="40" r="34" fill="none" stroke="#E50914" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 214"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <p id="gauge-percent" class="font-display text-base font-bold leading-none">0%</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-center text-[11px] text-gray-400 mt-1">Completed</p>
+          </div>
+        </div>
+
+        <div id="reminders" class="scroll-mt-20">
+          <div class="card-head">
+            <svg class="icon" style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M12 2v6M12 18a6 6 0 0 0 6-6c0-4-3-4-3-8H9c0 4-3 4-3 8a6 6 0 0 0 6 6Z"/></svg>
+            <span class="font-display font-bold text-sm tracking-wide">MAINTENANCE TIPS</span>
+          </div>
+          <div class="card-body">
+            <ul class="space-y-2.5 text-sm text-gray-700">
+              <li class="flex gap-2"><svg class="icon shrink-0" style="width:16px;height:16px;stroke:#E50914" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Regular servicing improves performance and mileage.</li>
+              <li class="flex gap-2"><svg class="icon shrink-0" style="width:16px;height:16px;stroke:#E50914" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Check engine oil, brakes and tyres every 5,000 km.</li>
+              <li class="flex gap-2"><svg class="icon shrink-0" style="width:16px;height:16px;stroke:#E50914" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Keep your vehicle clean for better longevity.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="about" class="scroll-mt-20 bg-charcoal text-white rounded-2xl p-6 mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span class="font-display font-bold text-sm tracking-wide">ABOUT THIS PROJECT</span>
+      </div>
+      <p class="text-sm text-white/70 leading-relaxed">
+        DRIVE CARE is a digital vehicle maintenance log built for a college PBL demonstration. It uses
+        <span class="text-white font-semibold">HTML5</span> for structure, <span class="text-white font-semibold">Tailwind CSS</span> for a responsive interface, and
+        <span class="text-white font-semibold">vanilla JavaScript</span> to handle input, calculations and maintenance alerts. All data is stored locally using
+        <span class="text-white font-semibold">LocalStorage</span>, and the next service is calculated from the latest actual service mileage plus a 5,000 km interval — not a fixed assumption.
+      </p>
+    </section>
+
+    <footer class="text-center text-xs text-gray-400 py-4">
+      DRIVE CARE — Digital Vehicle Maintenance Log
+    </footer>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
